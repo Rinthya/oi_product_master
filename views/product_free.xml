@@ -1,0 +1,106 @@
+<odoo>
+
+
+    <!-- Inherit Product Form -->
+    <record id="view_product_form_free" model="ir.ui.view">
+        <field name="name">product.template.form.free</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Add new tab -->
+            <xpath expr="//notebook" position="inside">
+
+                <page string="Free Products"
+                    invisible="not free_qty_restrict">
+
+                    <record id="crm_quick_create_no_partner_create" model="ir.ui.view">
+
+
+                        <group>
+                            <field name="free_from_date"/>
+                            <field name="free_to_date"/>
+                        </group>
+
+                        <group>
+                            <field name="free_min_qty"/>
+                        </group>
+
+
+                    <group string="Free Product Details">
+
+                        <group>
+                            <field name="free_product_1_id"/>
+                            <field name="free_qty_1"/>
+                        </group>
+
+                        <group>
+                            <field name="free_product_2_id"/>
+                            <field name="free_qty_2"/>
+                        </group>
+
+                    </group>
+                    </record>
+
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+
+
+<record id="view_product_form_inherit_free_qty" model="ir.ui.view">
+    <field name="name">product.template.form.inherit.free.qty</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_only_form_view"/>
+    <field name="arch" type="xml">
+        <!-- Insert Free Quantity Restriction after Barcode -->
+        <xpath expr="//page[@name='general_information']//field[@name='barcode']" position="after">
+            <field name="free_qty_restrict" groups="stock.group_stock_manager"/>
+        </xpath>
+    </field>
+</record>
+
+<record id="view_order_form_inherit_free_qty" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.free.qty</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+
+        <!-- Add free_qty column -->
+        <xpath expr="//field[@name='order_line']//field[@name='product_uom_qty']" position="after">
+            <field name="free_qty"/>
+        </xpath>
+
+        <!-- Visibility control -->
+        <xpath expr="//field[@name='order_line']//field[@name='free_qty']" position="attributes">
+            <attribute name="attrs">
+                {'invisible': [('free_qty_restrict', '=', False)]}
+            </attribute>
+        </xpath>
+
+    </field>
+</record>
+
+ <record id="view_sale_order_form_free_qty" model="ir.ui.view">
+        <field name="name">sale.order.form.free.qty</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- CORRECT XPATH -->
+            <xpath expr="//field[@name='order_line']/list/field[@name='tax_ids']" position="after">
+                <field name="free_qty" readonly="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+
+
+
+
+
+</odoo>
